@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML Resume Analyzer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background: url("{{ url_for('static', filename='backg.jpg') }}") center/cover no-repeat fixed;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #fff;
+        }
+
+
+        /* Navigation Bar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 50px;
+            background: rgba(15, 32, 39, 0.9);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            transition: 0.3s;
+        }
+
+        .navbar a:hover {
+            background: #ff4757;
+            border-radius: 5px;
+        }
+
+        .navbar img {
+            width: 30px;
+            vertical-align: middle;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 90vh;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 600;
+            text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-top: 10px;
+            max-width: 600px;
+            opacity: 0.9;
+        }
+
+        .hero button {
+            margin-top: 20px;
+            padding: 12px 25px;
+            border: none;
+            background: #ff4757;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .hero button:hover {
+            background: #ff6b81;
+            transform: scale(1.05);
+        }
+
+        /* Sections */
+        .section {
+            background: rgba(26, 26, 46, 0.9);
+            padding: 60px 50px;
+            text-align: center;
+            border-radius: 12px;
+            margin: 20px auto;
+            max-width: 90%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+        }
+
+        .section img {
+            width: 100%;
+            max-width: 500px;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Upload Section */
+        .upload-section input {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 5px;
+            border: none;
+            background: #2D2D44;
+            color: white;
+        }
+
+        .upload-section button {
+            padding: 12px 20px;
+            background: #ff4757;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+            border-radius: 5px;
+        }
+
+        .upload-section button:hover {
+            background: #ff6b81;
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(15, 32, 39, 0.9);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <div class="navbar">
+        <div><h2>Resume Analyzer</h2></div>
+        <div>
+            <a href="#about"><img src="{{ url_for('static', filename='about.png') }}" alt="About"> About</a>
+            <a href="#upload"><img src="{{ url_for('static', filename='upload.png') }}" alt="Upload"> Upload Resume</a>
+            <a href="#signup"><img src="{{ url_for('static', filename='signup.png') }}" alt="Signup"> Signup</a>
+            <a href="#contact"><img src="{{ url_for('static', filename='contact-us.png') }}" alt="Contact"> Contact</a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>Resume Analyzer using ML and NLP</h1>
+        <p>Upload your resume and get job category and job recommendations instantly using NLP & Machine Learning.</p>
+        <button onclick="window.location='#upload'">Upload Now</button>
+    </div>
+
+    <!-- About Section -->
+    <div class="section" id="about">
+        <h2>About Our Project</h2>
+        <p>Our Resume Category Analyzer uses ML and NLP techniques to categorize resumes, extract key details, and recommend suitable jobs.</p>
+        <img src="{{ url_for('static', filename='sr1.jpg') }}" alt="Resume Screening">
+    </div>
+
+    <!-- Resume Upload Section -->
+    <div class="section upload-section" id="upload">
+        <h2>Upload Your Resume</h2>
+        <form action="/pred" method="post" enctype="multipart/form-data">
+            <input type="file" name="resume" accept=".pdf, .txt" required>
+            <button type="submit">Upload Resume</button>
+        </form>
+
+        {% if message %}
+        <p class="message">{{ message }}</p>
+        {% endif %}
+
+        {% if predicted_category %}
+        <h2>Analysis Results</h2>
+        <p><strong>Category:</strong> {{ predicted_category }}</p>
+        <p><strong>Recommended Job:</strong> {{ recommended_job }}</p>
+        <br>
+        <hr>
+        <br>
+        <h1 class="text-center">Extracted Information</h1>
+        <p class="text-center"><b><strong>Name:</strong></b> {{name}}</p>
+        <p class="text-center"><b><strong>Phone No:</strong></b> {{phone}}</p>
+        <p class="text-center"><b><strong>Email:</strong></b> {{email}}</p>
+        {% if extracted_skills %}
+        <h1 class="text-center"><b><strong>Skills</strong></b></h1>
+        <ul class="list-unstyled text-center">
+            {% for skill in extracted_skills %}
+            <li>{{ skill }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-center">No skills founds.........</p>
+        <br>
+        {% if extracted_education %}
+        <h1 class="text-center">Education:</h1>
+        <ul class="list-unstyled text-center">
+            {% for edu in extracted_education %}
+            <li>{{ edu }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-center">No Education founds.........</p>
+        <br>
+        <hr>
+        <br>
+        {% endif %}
+        {% endif %}
+        {% endif %}
+    </div>
+
+    <!-- Signup Section -->
+    <div class="section" id="signup">
+        <h2>Sign Up</h2>
+        <form action="/signup" method="post">
+            <input type="text" name="name" placeholder="Enter your name" required>
+            <input type="email" name="email" placeholder="Enter your email" required>
+            <input type="password" name="password" placeholder="Enter your password" required>
+            <button type="submit">Sign Up</button>
+        </form>
+
+        {% if signup_message %}
+        <p class="message">{{ signup_message }}</p>
+        {% endif %}
+        <img src="{{ url_for('static', filename='SR.jpg') }}" alt="Job Search">
+    </div>
+
+    <!-- Footer (Contact Section) -->
+    <div class="footer" id="contact">
+        <h2>Contact</h2>
+        <p>Email: <a href="mailto:tgk787878@gmail.com" style="color: #ff6b81;">tgk7878@gmail.com</a></p>
+        <p>Phone: 6387580778</p>
+    </div>
+
+</body>
+</html>
